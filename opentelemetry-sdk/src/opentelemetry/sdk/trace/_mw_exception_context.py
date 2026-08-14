@@ -14,8 +14,8 @@ Kept in its own module, separate from ``Span.record_exception``, to keep the
 upstream diff this depends on as small as possible and to make it easy to
 carry forward across rebases onto new upstream releases.
 
-Disabled by default. Enable with the ``MW_RECORD_EXCEPTION_SOURCE``
-environment variable (accepts "true"/"false", case-insensitive).
+Enabled by default. Disable with ``MW_RECORD_EXCEPTION_SOURCE=false``
+(accepts "true"/"false", case-insensitive).
 """
 
 from __future__ import annotations
@@ -47,7 +47,20 @@ EXCEPTION_STACK_DETAILS = "exception.stack_details"
 
 
 def _is_enabled() -> bool:
-    return environ.get(_ENV_VAR_ENABLED, "false").strip().lower() == "true"
+    raw = environ.get(_ENV_VAR_ENABLED)
+    if raw is None:
+        return True
+    value = raw.strip().lower()
+    if value == "true":
+        return True
+    if value == "false":
+        return False
+    _logger.warning(
+        "Invalid value for %s: %r. Expected 'true' or 'false'. Defaulting to enabled.",
+        _ENV_VAR_ENABLED,
+        raw,
+    )
+    return True
 
 
 def _max_chars() -> int:

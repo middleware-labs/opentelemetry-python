@@ -68,7 +68,7 @@ hook_anchor = "            EXCEPTION_ESCAPED: str(escaped),\n        }\n        
 hook_patch = (
     "            EXCEPTION_ESCAPED: str(escaped),\n"
     "        }\n"
-    "        # mw: fork-only addition, opt-in via MW_RECORD_EXCEPTION_SOURCE\n"
+    "        # mw: fork-only addition, on by default; opt out via MW_RECORD_EXCEPTION_SOURCE=false\n"
     "        _attributes.update(get_exception_source_attributes(exception))\n"
     "        if attributes:"
 )

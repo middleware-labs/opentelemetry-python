@@ -21,13 +21,16 @@
 #
 # This image is just a file source copied into the target app pod by the
 # Operator's init container -- nothing in it actually runs, so setting env
-# vars here would have no effect on the instrumented app. To turn the new
-# features on, set these on the *target application* pod instead (e.g. via
-# the Instrumentation CR's spec.env, or the pod spec directly):
-#   MW_RECORD_EXCEPTION_SOURCE=true
-#   OTEL_EXPERIMENTAL_RESOURCE_DETECTORS=vcs
-# The vcs detector falls back to reading the local .git checkout via the
-# `git` CLI, but most production app images have neither `git` nor a `.git`
+# vars here would have no effect on the instrumented app.
+#
+# Exception source capture (exception.stack_details) is ON by default; set
+# MW_RECORD_EXCEPTION_SOURCE=false on the *target application* pod (e.g. via
+# the Instrumentation CR's spec.env, or the pod spec directly) to disable it.
+#
+# The vcs resource detector is opt-in (unlike the above): set
+# OTEL_EXPERIMENTAL_RESOURCE_DETECTORS=vcs on the target application pod to
+# enable it. It falls back to reading the local .git checkout via the `git`
+# CLI, but most production app images have neither `git` nor a `.git`
 # directory -- for those, also set MW_VCS_REPOSITORY_URL / MW_VCS_COMMIT_SHA
 # explicitly (e.g. injected from CI at build/deploy time).
 
